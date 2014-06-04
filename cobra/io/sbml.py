@@ -46,13 +46,14 @@ def parse_legacy_id(the_id, the_compartment=None, the_type='metabolite',
             the_id = the_id[:-len(the_compartment)-1]
         the_id += '[%s]'%the_compartment
     return the_id
-def create_cobra_model_from_sbml_file(sbml_filename, old_sbml=False, legacy_metabolite=False,
+
+def create_cobra_model_from_sbml_doc(model_doc, old_sbml=False, legacy_metabolite=False,
                                       print_time=False, use_hyphens=False):
-    """convert an SBML XML file into a cobra.Model object.  Supports
-    SBML Level 2 Versions 1 and 4.  The function will detect if the SBML fbc package is used in the file
+    """convert a libsbml.SBMLDocument object into a cobra.Model object. Supports
+    SBML Level 2 Versions 1 and 4.  The function will detect if the SBML fbc package is used in the document
     and run the converter if the fbc package is used.
 
-    sbml_filename: String.
+    model_doc: libsbml.SBMLDocument object.
 
     old_sbml:  Boolean. Set to True if the XML file has metabolite
     formula appended to metabolite names.  This was a poorly designed
@@ -70,16 +71,15 @@ def create_cobra_model_from_sbml_file(sbml_filename, old_sbml=False, legacy_meta
     __default_lower_bound = -1000
     __default_upper_bound = 1000
     __default_objective_coefficient = 0
-     # Ensure that the file exists
-    if not isfile(sbml_filename):
-        raise IOError('Your SBML file is not found: %s'%sbml_filename)
+     # Ensure that model_doc is the right type of object
+    if model_doc.__class__ != 'libsbml.SBMLDocument':
+        raise IOError('Input model_doc is not a libsbml.SBMLDocument object: %s'%model_doc)
     #Expressions to change SBML Ids to Palsson Lab Ids
     metabolite_re = re.compile('^M_')
     reaction_re = re.compile('^R_')
     compartment_re = re.compile('^C_')
     if print_time:
         warn("print_time is deprecated")
-    model_doc = readSBML(sbml_filename)
     if (model_doc.getPlugin("fbc") != None):
         from libsbml import ConversionProperties, LIBSBML_OPERATION_SUCCESS
         conversion_properties = ConversionProperties()
@@ -280,6 +280,32 @@ def create_cobra_model_from_sbml_file(sbml_filename, old_sbml=False, legacy_meta
         #cobra_model.update_rules()
     return cobra_model
 
+def create_cobra_model_from_sbml_file(sbml_filename, old_sbml=False, legacy_metabolite=False,
+                                      print_time=False, use_hyphens=False):
+    """convert an SBML XML file into a cobra.Model object.  Supports
+    SBML Level 2 Versions 1 and 4.  The function will detect if the SBML fbc package is used in the file
+    and run the converter if the fbc package is used.
+
+    sbml_filename: String.
+
+    old_sbml:  Boolean. Set to True if the XML file has metabolite
+    formula appended to metabolite names.  This was a poorly designed
+    artifact that persists in some models.
+
+    legacy_metabolite: Boolean.  If True then assume that the metabolite id has
+    the compartment id appended after an underscore (e.g. _c for cytosol).  This
+    has not been implemented but will be soon.
+
+    print_time: deprecated
+
+    use_hyphens:   Boolean.  If True, double underscores (__) in an SBML ID will be converted to hyphens
+
+    """
+     # Ensure that the file exists
+    if not isfile(sbml_filename):
+        raise IOError('Your SBML file is not found: %s'%sbml_filename)
+    model_doc = readSBML(sbml_filename)
+    return create_cobra_model_from_sbml_doc(model_doc, old_sbml, legacy_metabolite, print_time, use_hyphens)
 
 def parse_legacy_sbml_notes(note_string, note_delimiter = ':'):
     """Deal with legacy SBML format issues arising from the

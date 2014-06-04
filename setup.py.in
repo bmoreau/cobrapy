@@ -75,7 +75,7 @@ setup(
     url = "https://github.com/opencobra/cobrapy",
     test_suite = "cobra.test.suite",
     long_description = "COnstraint-Based Reconstruction and Analysis (COBRA) methods are widely used for genome-scale modeling of metabolic networks in both prokaryotes and eukaryotes.  COBRApy is a constraint-based modeling package that is designed to accomodate the biological complexity of the next generation of COBRA models and provides access to commonly used COBRA methods, such as flux balance analysis, flux variability analysis, and gene deletion analyses.  Through the mlabwrap module it is possible to use COBRApy to call many additional COBRA methods present in the COBRA Toolbox for MATLAB.",
-    download_url = 'http://sourceforge.net/projects/opencobra/files/python/cobra/' + __version,
+    download_url = 'http://sourceforge.net/projects/opencobra/files/python/cobra/' + str(__version),
     classifiers = ['Development Status :: 5 - Production/Stable',
                    'Environment :: Console',
                    'Intended Audience :: Science/Research',
