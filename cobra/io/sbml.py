@@ -72,8 +72,8 @@ def create_cobra_model_from_sbml_doc(model_doc, old_sbml=False, legacy_metabolit
     __default_upper_bound = 1000
     __default_objective_coefficient = 0
      # Ensure that model_doc is the right type of object
-    if model_doc.__class__ != 'libsbml.SBMLDocument':
-        raise IOError('Input model_doc is not a libsbml.SBMLDocument object: %s'%model_doc)
+    if not isinstance(model_doc, SBMLDocument):
+      raise IOError('Input model_doc is not a libsbml.SBMLDocument object: %s'%model_doc)
     #Expressions to change SBML Ids to Palsson Lab Ids
     metabolite_re = re.compile('^M_')
     reaction_re = re.compile('^R_')
