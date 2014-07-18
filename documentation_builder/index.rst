@@ -9,13 +9,13 @@ Documentation for COBRApy
     metabolites
     01_create_model
     02_read_simulate_write
-    03_single_deletion
     04_change_objective
     05_add_reactions
-    06_ice_cream_milp
-    07_double_deletion
+    deletions
     phenotype_phase_plane
     escher
+    milp
+    qp
     cobra
 
 
